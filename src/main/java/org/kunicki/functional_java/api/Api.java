@@ -1,6 +1,10 @@
 package org.kunicki.functional_java.api;
 
+import org.kunicki.functional_java.common.Attempt;
 import org.kunicki.functional_java.domain.Service;
+import org.kunicki.functional_java.domain.User;
+
+import java.util.Optional;
 
 public class Api {
 
@@ -30,5 +34,16 @@ public class Api {
             Q: What if we represented expected errors as plain values?
              */
         //endregion
+    }
+
+    public Response<?> betterFindUserById(Long id) {
+        final var user = Attempt.of(() -> service.findUserById(id));
+        if (user instanceof Attempt.Success<Optional<User>> success) {
+            return success.value().map(Response::ok).orElse(Response.notFound());
+        } else if (user instanceof Attempt.Failure<Optional<User>> failure){
+            return Response.serverError(failure.e().getMessage());
+        } else {
+            return Response.serverError("Should never happen");
+        }
     }
 }
