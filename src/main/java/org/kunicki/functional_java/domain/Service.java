@@ -1,5 +1,8 @@
 package org.kunicki.functional_java.domain;
 
+import org.kunicki.functional_java.common.Or;
+import org.kunicki.functional_java.domain.error.Error;
+
 import java.util.Optional;
 
 public class Service {
@@ -53,6 +56,10 @@ public class Service {
     //region Error handling
     public Optional<User> findUserById(Long id) {
         return Optional.of(new User(42L, "Jacek"));
+    }
+
+    public Or<Error, Optional<User>> betterFindUserById(Long id) {
+        return Or.left(new Error.DomainError("Boom!"));
     }
 
     //region Tips

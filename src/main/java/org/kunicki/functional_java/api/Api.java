@@ -1,8 +1,10 @@
 package org.kunicki.functional_java.api;
 
-import org.kunicki.functional_java.common.Attempt;
+import org.kunicki.functional_java.common.Or;
 import org.kunicki.functional_java.domain.Service;
 import org.kunicki.functional_java.domain.User;
+import org.kunicki.functional_java.domain.error.Error;
+import org.kunicki.functional_java.domain.error.ExternalError;
 
 import java.util.Optional;
 
@@ -37,11 +39,15 @@ public class Api {
     }
 
     public Response<?> betterFindUserById(Long id) {
-        final var user = Attempt.of(() -> service.findUserById(id));
+        final var user = service.betterFindUserById(id);
         return switch (user) {
-            case Attempt.Success<Optional<User>> success ->
-                success.value().map(Response::ok).orElse(Response.notFound());
-            case Attempt.Failure<?> failure -> Response.serverError(failure.e().getMessage());
+            case Or.Right<?, Optional<User>> r -> r.value().map(Response::ok).orElse(Response.notFound());
+            case Or.Left<Error, ?> l -> switch (l.value()) {
+                case Error.DomainError e && e.message().startsWith("E") ->
+                    Response.serverError("Specific domain error: " + e.message());
+                case Error.DomainError e -> Response.serverError("Domain error: " + e.message());
+                case ExternalError e -> Response.serverError("External error: " + e.message());
+            };
         };
     }
 }

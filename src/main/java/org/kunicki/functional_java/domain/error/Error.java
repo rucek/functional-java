@@ -1,5 +1,7 @@
 package org.kunicki.functional_java.domain.error;
 
-public interface Error {
+public sealed interface Error permits Error.DomainError, ExternalError {
 
+    record DomainError(String message) implements Error {
+    }
 }
