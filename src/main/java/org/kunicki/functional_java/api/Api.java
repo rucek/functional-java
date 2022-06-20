@@ -38,12 +38,10 @@ public class Api {
 
     public Response<?> betterFindUserById(Long id) {
         final var user = Attempt.of(() -> service.findUserById(id));
-        if (user instanceof Attempt.Success<Optional<User>> success) {
-            return success.value().map(Response::ok).orElse(Response.notFound());
-        } else if (user instanceof Attempt.Failure<Optional<User>> failure){
-            return Response.serverError(failure.e().getMessage());
-        } else {
-            return Response.serverError("Should never happen");
-        }
+        return switch (user) {
+            case Attempt.Success<Optional<User>> success ->
+                success.value().map(Response::ok).orElse(Response.notFound());
+            case Attempt.Failure<?> failure -> Response.serverError(failure.e().getMessage());
+        };
     }
 }

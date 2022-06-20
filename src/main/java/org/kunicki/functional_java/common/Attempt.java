@@ -2,7 +2,7 @@ package org.kunicki.functional_java.common;
 
 import java.util.function.Supplier;
 
-public interface Attempt<A> {
+public sealed interface Attempt<A> {
 
     record Success<A>(A value) implements Attempt<A> {
     }
