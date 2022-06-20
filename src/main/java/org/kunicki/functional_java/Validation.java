@@ -1,6 +1,10 @@
 package org.kunicki.functional_java;
 
+import io.vavr.collection.Seq;
 import io.vavr.control.Either;
+import io.vavr.control.Validation;
+
+import java.util.List;
 
 record Person(String name, int age) {
 }
@@ -39,4 +43,18 @@ class FailingFast implements PersonValidator {
 
 class Accumulating implements PersonValidator {
 
+    private Validation<String, String> validateName(String name) {
+        return isNameValid(name) ? Validation.valid(name) : Validation.invalid("Invalid name");
+    }
+
+    private Validation<String, Integer> validateAge(int age) {
+        return isAgeValid(age) ? Validation.valid(age) : Validation.invalid("Invalid age");
+    }
+
+    public Either<List<String>, Person> validate(String name, int age) {
+        return Validation.combine(validateName(name), validateAge(age))
+            .ap(Person::new)
+            .mapError(Seq::asJava)
+            .toEither();
+    }
 }
