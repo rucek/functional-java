@@ -20,6 +20,8 @@ class ImmutableData {
 //endregion
 
 //region Record
+record DataRecord(Long id, String value) {
+}
 //endregion
 
 //region Record test
@@ -27,7 +29,7 @@ class ImmutableData {
 class RecordTest {
 
     public static void main(String[] args) {
-
+        System.out.println(new DataRecord(42L, "Test"));
     }
 }
 //endregion
