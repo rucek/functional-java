@@ -1,17 +1,9 @@
 package org.kunicki.functional_java;
 
-/**
- * @title Fear not the unknown, my friend. And go FP.
- *
- * @author Jacek Kunicki
- * @company SoftwareMill
- *
- * @twitter https://twitter.com/rucek
- */
 public class Talk {
 
     //region Disclaimer
-    // Everything here would probably be counter-intuitive at first
+    //  Everything here would probably be counter-intuitive at first
     //endregion
 
     //region Functional Programming
@@ -22,13 +14,16 @@ public class Talk {
          * immutable values can be safely passed around
          */
         /*
-         * thread-safe - can be safely parallelized
+         * pure functions can be memoized
          */
         /*
-         * suitable for property-based testing
+         * pure functions are thread-safe - can be safely parallelized
          */
         /*
-         * easier to reason about - buzzword, but it's true
+         * pure functions are suitable for property-based testing
+         */
+        /*
+         * "easier to reason about" - buzzword, but it's true
          */
     //endregion
 
@@ -40,35 +35,38 @@ public class Talk {
          * types formed by combining other types
          */
         /*
-         * (cartesian) product
+         * record - (cartesian) product
          */
         /*
-         * sum (disjoint union, coproduct)
+         * sealed hierarchy - sum (disjoint union, coproduct)
+         */
+        /*
+         * aggregation vs choice
+         */
+        /*
+         * illegal states are unrepresentable
          */
     //endregion
 
-    //region Validation, or monads vs applicatives
-
-        //* monads
-            /*
-             * allow to sequence dependent computations
-             */
-            /*
-             * fail fast
-             */
-
-        //* applicatives (applicative functors)
-            /*
-             * allow to run computations independently
-             */
-            /*
-             * accumulate the results
-             */
+    //region Validation
+        /*
+         * monads - e.g. Either
+            * allow to sequence dependent computations
+            * fail fast
+         */
+        /*
+         * applicatives (applicative functors) - e.g. Validation
+            * allow to run computations independently
+            * accumulate the results
+         */
     //endregion
 
-    //region Bonus: framework-less DI
+    //region Bonus: framework-less
         /*
          * Over-engineering?
+         */
+        /*
+         * Framework vs libraries
          */
         /*
          * Programming with @Annotations
@@ -85,7 +83,7 @@ public class Talk {
         /*
          * Leverage the power of ADTs and pattern matching
          *
-         * --enable-preview
+           * https://sml.io/java-21-switch
          */
         /*
          * Monads do not bite, neither do applicatives, functors etc.
@@ -93,7 +91,7 @@ public class Talk {
         /*
          * There's life beyond @SpringBootApplication
          *
-         * https://sml.io/the-case-against-annotations
+           * https://sml.io/the-case-against-annotations
          */
         /*
          * Read "Functional Programming Simplified" by Alvin Alexander

@@ -1,7 +1,5 @@
 package org.kunicki.functional_java.domain;
 
-//region Immutable Data
-
 class ImmutableData {
 
     public final Long id;
@@ -17,9 +15,9 @@ class ImmutableData {
         return new ImmutableData(this.id, value);
     }
 }
-//endregion
 
 //region Record
+
 record DataRecord(Long id, String value) {
 }
 //endregion
@@ -29,7 +27,8 @@ record DataRecord(Long id, String value) {
 class RecordTest {
 
     public static void main(String[] args) {
-        System.out.println(new DataRecord(42L, "Test"));
+        System.out.println(new ImmutableData(2024L, "Geecon"));
+        System.out.println(new DataRecord(2024L, "Geecon"));
     }
 }
 //endregion

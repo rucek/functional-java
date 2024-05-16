@@ -1,10 +1,9 @@
 package org.kunicki.functional_java;
 
-import io.vavr.collection.Seq;
+import io.vavr.Value;
+import io.vavr.collection.List;
 import io.vavr.control.Either;
 import io.vavr.control.Validation;
-
-import java.util.List;
 
 record Person(String name, int age) {
 }
@@ -23,7 +22,6 @@ interface PersonValidator {
 }
 
 class FailingFast implements PersonValidator {
-
     private Either<String, String> validateName(String name) {
         return isNameValid(name) ? Either.right(name) : Either.left("Invalid name");
     }
@@ -33,6 +31,7 @@ class FailingFast implements PersonValidator {
     }
 
     public Either<String, Person> validate(String name, int age) {
+        // (valid name, valid age) -> Person
         return validateName(name).flatMap(n ->
             validateAge(age).map(a ->
                 new Person(n, a)
@@ -42,19 +41,20 @@ class FailingFast implements PersonValidator {
 }
 
 class Accumulating implements PersonValidator {
-
     private Validation<String, String> validateName(String name) {
         return isNameValid(name) ? Validation.valid(name) : Validation.invalid("Invalid name");
     }
 
-    private Validation<String, Integer> validateAge(int age) {
+    private Validation<String, Integer> validateAge(Integer age) {
         return isAgeValid(age) ? Validation.valid(age) : Validation.invalid("Invalid age");
     }
 
     public Either<List<String>, Person> validate(String name, int age) {
-        return Validation.combine(validateName(name), validateAge(age))
-            .ap(Person::new)
-            .mapError(Seq::asJava)
-            .toEither();
+        // (valid name, valid age) -> Person
+        final var combined = validateName(name).combine(validateAge(age));
+        final var validatedPerson = combined.ap(Person::new);
+
+        // optionally convert errors to java.util.List and Validation to Either
+        return validatedPerson.mapError(Value::toList).toEither();
     }
 }

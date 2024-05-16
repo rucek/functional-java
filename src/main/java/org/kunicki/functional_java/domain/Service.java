@@ -1,36 +1,48 @@
 package org.kunicki.functional_java.domain;
 
+import org.kunicki.functional_java.common.Attempt;
 import org.kunicki.functional_java.common.Or;
-import org.kunicki.functional_java.domain.error.Error;
-
-import java.util.Optional;
+import org.kunicki.functional_java.domain.error.MyError;
 
 public class Service {
 
-    //region Pure functions
+    //region Pure functions and immutable values
 
     //region Definition
-    /*
-     Q: What makes a function pure?
-        * the output only depends on the inputs
-        * no side effects
-     */
+        /*
+         * idempotency - same state after multiple calls
+         */
+        /*
+         * referential transparency (RT) - can replace calls with results
+         */
+        /*
+         * idempotent ⊆ RT
+         */
+        /*
+         * what makes a function pure?
+            * the output only depends on the inputs
+            * no (unmanaged) side effects
+         */
     //endregion
 
+    // region Example
     long doStuff(final long n, final Data data) {
         /*
-        P: mutates the argument
+        P: mutates the argument (shared state)
+
+        P: does Data actually represent some fixed data?
          */
-        data.setValue("devoxxpl");
+        data.setValue("GeeCON 2024");
 
         /*
-        P: interacts with I/O
+        P: interacts with I/O - side effect
          */
         System.out.println(n);
 
         /*
         P: depends on something external
-        P: the if statement does not have a value
+
+        P: breaks idempotency / referential transparency
          */
         if (System.currentTimeMillis() % 2 == 0) {
             return n;
@@ -38,37 +50,21 @@ public class Service {
             return n + 1;
         }
     }
-
-    //region Tips
-        /*
-        T: Use (immutable) values wherever possible
-         */
-        /*
-        T: Control the side effects
-        */
-        /*
-        T: Prefer immutability as a rule of thumb
-        */
     //endregion
 
     //endregion
 
     //region Error handling
-    public Optional<User> findUserById(Long id) {
-        return Optional.of(new User(42L, "Jacek"));
+    public User findUserById(Long id) {
+        return new User(42L, "Jacek");
     }
 
-    public Or<Error, Optional<User>> betterFindUserById(Long id) {
-        return Or.left(new Error.DomainError("Boom!"));
+    public Attempt<User> betterFindUserById(Long id) {
+        return Attempt.of(() -> findUserById(id));
     }
 
-    //region Tips
-        /*
-        T: Return expected errors as plain values
-         */
-        /*
-        T: Keep a catch-all error handler for truly unexpected errors
-         */
-    //endregion
+    public Or<MyError, User> evenBetterFindUserById(Long id) {
+        return Or.left(new MyError.DomainError("Boom!"));
+    }
     //endregion
 }

@@ -1,12 +1,11 @@
 package org.kunicki.functional_java.api;
 
+import org.kunicki.functional_java.common.Attempt;
 import org.kunicki.functional_java.common.Or;
 import org.kunicki.functional_java.domain.Service;
 import org.kunicki.functional_java.domain.User;
-import org.kunicki.functional_java.domain.error.Error;
 import org.kunicki.functional_java.domain.error.ExternalError;
-
-import java.util.Optional;
+import org.kunicki.functional_java.domain.error.MyError;
 
 public class Api {
 
@@ -18,9 +17,7 @@ public class Api {
 
     public Response<?> findUserById(Long id) {
         final var user = service.findUserById(id);
-        return user
-            .map(Response::ok)
-            .orElse(Response.notFound());
+        return Response.ok(user);
 
         //region Questions
             /*
@@ -34,20 +31,29 @@ public class Api {
              */
             /*
             Q: What if we represented expected errors as plain values?
+             * unification
+             * except for truly exceptional cases
              */
         //endregion
     }
 
     public Response<?> betterFindUserById(Long id) {
         final var user = service.betterFindUserById(id);
+
         return switch (user) {
-            case Or.Right<?, Optional<User>> r -> r.value().map(Response::ok).orElse(Response.notFound());
-            case Or.Left<Error, ?> l -> switch (l.value()) {
-                case Error.DomainError e && e.message().startsWith("E") ->
-                    Response.serverError("Specific domain error: " + e.message());
-                case Error.DomainError e -> Response.serverError("Domain error: " + e.message());
-                case ExternalError e -> Response.serverError("External error: " + e.message());
-            };
+            case Attempt.Success(var u) -> Response.ok(u);
+            case Attempt.Failure(var e) -> Response.serverError(e.getMessage());
+        };
+    }
+
+    public Response<?> evenBetterFindUserById(Long id) {
+        final var user = service.evenBetterFindUserById(id);
+
+        return switch (user) {
+            case Or.Right(User(_, var name)) -> Response.ok(name);
+            case Or.Left(MyError.DomainError(var m)) -> Response.serverError(m);
+            case Or.Left(ExternalError(var m)) when m.startsWith("DB") -> Response.serverError(m);
+            case Or.Left(ExternalError(var m)) -> Response.serverError(m);
         };
     }
 }
