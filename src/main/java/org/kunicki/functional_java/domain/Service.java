@@ -8,7 +8,7 @@ public class Service {
 
     //region Pure functions and immutable values
 
-    //region Definition
+    //region Definitions
         /*
          * idempotency - same state after multiple calls
          */
@@ -32,10 +32,10 @@ public class Service {
 
         P: does Data actually represent some fixed data?
          */
-        data.setValue("GeeCON 2024");
+        data.setValue("JavaZone 2024");
 
         /*
-        P: interacts with I/O - side effect
+        P: interacts with I/O - unmanaged side effect
          */
         System.out.println(n);
 

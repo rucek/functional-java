@@ -13,6 +13,10 @@ dependencies {
     implementation "io.vavr:vavr:0.10.4"
 }
 
+tasks.withType(JavaCompile).each {
+    it.options.compilerArgs.add('--enable-preview')
+}
+
 test {
     useJUnitPlatform()
 }

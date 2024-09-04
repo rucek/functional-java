@@ -1,9 +1,7 @@
 package org.kunicki.functional_java.domain;
 
 class Data {
-
     private Long id;
-
     private String value;
 
     public Data(Long id, String value) {

@@ -7,6 +7,5 @@
  * @author      Jacek Kunicki
  * @company     SoftwareMill
  *
- * @twitter     https://twitter.com/rucek
+ * @xwitter     https://x.com/rucek
  */
-

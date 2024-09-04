@@ -15,9 +15,9 @@ public class Api {
         this.service = service;
     }
 
-    public Response<?> findUserById(Long id) {
+    public Response<String> findUserById(Long id) {
         final var user = service.findUserById(id);
-        return Response.ok(user);
+        return Response.ok(user.name());
 
         //region Questions
             /*
@@ -37,16 +37,16 @@ public class Api {
         //endregion
     }
 
-    public Response<?> betterFindUserById(Long id) {
+    public Response<String> betterFindUserById(Long id) {
         final var user = service.betterFindUserById(id);
 
         return switch (user) {
-            case Attempt.Success(var u) -> Response.ok(u);
+            case Attempt.Success(var u) -> Response.ok(u.name());
             case Attempt.Failure(var e) -> Response.serverError(e.getMessage());
         };
     }
 
-    public Response<?> evenBetterFindUserById(Long id) {
+    public Response<String> evenBetterFindUserById(Long id) {
         final var user = service.evenBetterFindUserById(id);
 
         return switch (user) {
